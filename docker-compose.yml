@@ -1,0 +1,30 @@
+version: '2'
+services:
+  php:
+    build: ./php
+    volumes:
+      - ./:/var/www/html
+    expose:
+      - "9000"
+  nginx:
+    build: ./nginx
+    volumes_from:
+      - php
+    volumes:
+      - ./logs:/etc/logs/nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - php
+
+  mysql:
+    image: mysql:latest
+    volumes:
+     - ./database/mysql:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
